@@ -3,23 +3,18 @@ import java.util.Map.Entry;
  
 public class CS320_A1 {
  
-	@SuppressWarnings("null")
 	public static void main(String[] args) 
     {
 		/* // Preference order for 3 blue nodes       
         int blueNodes[][] = {
-                {1,2,3,4},
                 {1,2},
-                {1,3,4},
-                {1,4}
+                {1,2}
          };
 		
         // Preference order for 3 pink nodes       
         int pinkNodes[][] = {
-                {1,3},
-                {2,3,4},
-                {1,3,4},
-                {1,2,3,4}
+                {2,1},
+                {2,1},
          }; 
         
         execute(blueNodes, pinkNodes);
@@ -31,6 +26,7 @@ public class CS320_A1 {
     	int [][] pinkNodes = null;
     	int row = 0;
     	int col = 0;
+    	int n = 0;
     	int instance = 1;
     	boolean isNewInstance = false;
     	boolean blueNodesFull = false;
@@ -41,7 +37,10 @@ public class CS320_A1 {
 	        		break;
 	        	}
 	        	if(input.length() == 1){   //check the index of instance
+	        		n = Character.getNumericValue(input.charAt(0));
 	        		//System.out.println(n);
+	        		blueNodes = new int [n][n];
+	        		pinkNodes = new int [n][n];
 	        		isNewInstance = true;
 	        	}else{                 // loop data into 2d arrays, blueNodes and pinkNodes
 	        		if(isNewInstance == true){
@@ -54,7 +53,7 @@ public class CS320_A1 {
 	        			col = 0;
 	        			isNewInstance = false;
 	        		}else{
-	        			if(row <= (input.length()+1)/2 - 1 && blueNodesFull == false){
+	        			if(row <= n - 1 && blueNodesFull == false){
 	        				for (int i=0; i<=input.length()-1; i=i+2){
 	        					blueNodes[row][col] = Character.getNumericValue(input.charAt(i));
 	        					col++;
@@ -75,7 +74,7 @@ public class CS320_A1 {
 	        				row++;
 	        				col = 0;
 	        			}
-	        			else if(row <= (input.length()+1)/2 - 1 && blueNodesFull == true){
+	        			else if(row <= n - 1 && blueNodesFull == true){
 	        				//System.out.println(input.length());
 	        				for (int i=0; i<=input.length()-1; i=i+2){
 	        					pinkNodes[row][col] = Character.getNumericValue(input.charAt(i));
@@ -84,7 +83,7 @@ public class CS320_A1 {
 	        				//System.out.println(pinkNodes[2][2]);
 	        				row++;
 	        				col = 0;
-	        				if(row > (input.length()+1)/2 - 1)  {			
+	        				if(row > n -1 )  {			
 	 	        				System.out.println("Instance " + instance + ":");
 	 	        				execute(blueNodes, pinkNodes);
 	 	        				instance++;
@@ -104,7 +103,7 @@ public class CS320_A1 {
     	}finally{
     	    scanner.close(); 
     	} 
-}   
+}      
               
         public static void execute(int[][] blueNodes, int[][] pinkNodes) {
         	
