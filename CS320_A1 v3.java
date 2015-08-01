@@ -21,7 +21,7 @@ public class CS320_A1 {
     } */
     	
     	Scanner scanner = new Scanner (System.in);
-		//Scanner scanner = new Scanner ("2015A1 sample input.doc");
+		//Scanner scanner = new Scanner ("input.txt");
     	int [][] blueNodes = null;
     	int [][] pinkNodes = null;
     	int row = 0;
@@ -87,7 +87,7 @@ public class CS320_A1 {
 	        				//System.out.println(pinkNodes[2][2]);
 	        				row++;
 	        				col = 0;
-	        				if(row > n-1)  {			
+	        				if(row > n-1)  {
 	 	        				System.out.println("Instance " + instance + ":");
 	 	        				execute(blueNodes, pinkNodes);
 	 	        				instance++;
@@ -131,6 +131,7 @@ public class CS320_A1 {
         while (size > 0)  // Loop till there are no unmatched blue nodes available
         {
             int currentBlueNode = availableBlueNode.iterator().next();
+            //System.out.println ("\nMan " + currentBlueNode + " arrives:");
 
 	            for (int w : blueNodes[currentBlueNode - 1]) // loop through preferences of this blue node
 	            {
@@ -141,6 +142,7 @@ public class CS320_A1 {
 		                    availablePinkNode.put(w, currentBlueNode);
 		                    finalBlueNode.put(currentBlueNode, w);
 		                    availableBlueNode.remove(currentBlueNode);
+		                    //System.out.println ("Man " + currentBlueNode + " engaged to woman " + w);
 		                    break;
 		                } 
 		                else               // this pink node is currently engaged
@@ -156,12 +158,14 @@ public class CS320_A1 {
 		                            prefForCurrentBlueNode = k;
 		                     }
 		                    
-		                    if (prefForCurrentBlueNode <= prefForMatchedBlueNode) // next unmatched blue node has higher preference by this woman
+		                    if (prefForCurrentBlueNode < prefForMatchedBlueNode) // next unmatched blue node has higher preference by this woman
 		                    {
 		                        availablePinkNode.put (w, currentBlueNode);
 		                        finalBlueNode.put (currentBlueNode, w);// accept current unmatched blue node
 		                        availableBlueNode.remove(currentBlueNode);
 		                        availableBlueNode.add(matchedBlueNode); // return previous matched blue node to unmatched blue node's pool
+		                        //System.out.println ("Man " + matchedBlueNode + " is dumped by woman " + w);
+		                        //System.out.println ("Man " + currentBlueNode + " engaged to woman " + w);
 		                        break;
 		                    }
 		                }
