@@ -1,5 +1,5 @@
+//Done by Jma412, Jia Ma, 6290387.
 import java.util.*;
-import java.util.Map.Entry;
  
 public class CS320_A1 {
  
@@ -74,7 +74,7 @@ public class CS320_A1 {
 	        					pinkNodes[row][col] = Integer.parseInt(st.nextToken());
 	        					col++;
 	        				}
-	        				//System.out.println(pinkNodes[0][2]);
+	        				//System.out.println(pinkNodes[0][0]);
 	        				row++;
 	        				col = 0;
 	        			}
@@ -84,11 +84,12 @@ public class CS320_A1 {
 	        					pinkNodes[row][col] = Integer.parseInt(st.nextToken());
 	        					col++;
 	        				}
-	        				//System.out.println(pinkNodes[2][2]);
 	        				row++;
 	        				col = 0;
 	        				if(row > n-1)  {
 	 	        				System.out.println("Instance " + instance + ":");
+	 	        				/* for (int i=0; i<blueNodes.length; i++)
+	 	        					System.out.println(blueNodes[i][i]); */
 	 	        				execute(blueNodes, pinkNodes);
 	 	        				instance++;
 	 	        				row = 0;
@@ -111,7 +112,7 @@ public class CS320_A1 {
               
         public static void execute(int[][] blueNodes, int[][] pinkNodes) {
         	
-        Set<Integer> availableBlueNode = new HashSet <Integer> ();
+        List<Integer> availableBlueNode = new LinkedList <Integer> ();
         Map<Integer, Integer> finalBlueNode = new HashMap <Integer, Integer> ();
         Map<Integer, Integer> availablePinkNode = new HashMap <Integer, Integer> ();
         
@@ -119,69 +120,54 @@ public class CS320_A1 {
         for (int i=1; i<=blueNodes.length; i++)
             availableBlueNode.add(i);
         
-     // Store final states of blue nodes   
-        for (int i=1; i<=blueNodes.length; i++)
-            finalBlueNode.put(i, null);
-        
-     // Store alliance of a pink nodes in a HashMap.
-        for (int i=1; i<=pinkNodes.length; i++)
-            availablePinkNode.put(i, null);
-        
-        int size = availableBlueNode.size();
-        while (size > 0)  // Loop till there are no unmatched blue nodes available
+        while (!availableBlueNode.isEmpty())  // Loop till there are no unmatched blue nodes available
         {
-            int currentBlueNode = availableBlueNode.iterator().next();
-            //System.out.println ("\nMan " + currentBlueNode + " arrives:");
+            int currentBlueNode = availableBlueNode.remove(0);
+            System.out.println (currentBlueNode + " arrives:");
 
-	            for (int w : blueNodes[currentBlueNode - 1]) // loop through preferences of this blue node
-	            {
-	            
-	                Integer matchedBlueNode = availablePinkNode.get(w);
-		                if (matchedBlueNode == null) // this pink node is not yet engaged
-		                {
-		                    availablePinkNode.put(w, currentBlueNode);
-		                    finalBlueNode.put(currentBlueNode, w);
-		                    availableBlueNode.remove(currentBlueNode);
-		                    //System.out.println ("Man " + currentBlueNode + " engaged to woman " + w);
-		                    break;
-		                } 
-		                else               // this pink node is currently engaged
-		                {
-		                    int prefForMatchedBlueNode = -1;
-		                    int prefForCurrentBlueNode = -1;
-		                    for (int k=1; k<=pinkNodes[w - 1].length; k++)
-		                    {
-		                        if (pinkNodes[w - 1][k - 1] == matchedBlueNode) // find preference order for current matched blue node
-		                            prefForMatchedBlueNode = k;
-		                        
-		                        if (pinkNodes[w - 1][k - 1] == currentBlueNode) // find preference order for current proposer
-		                            prefForCurrentBlueNode = k;
-		                     }
-		                    
-		                    if (prefForCurrentBlueNode < prefForMatchedBlueNode) // next unmatched blue node has higher preference by this woman
-		                    {
-		                        availablePinkNode.put (w, currentBlueNode);
-		                        finalBlueNode.put (currentBlueNode, w);// accept current unmatched blue node
-		                        availableBlueNode.remove(currentBlueNode);
-		                        availableBlueNode.add(matchedBlueNode); // return previous matched blue node to unmatched blue node's pool
-		                        //System.out.println ("Man " + matchedBlueNode + " is dumped by woman " + w);
-		                        //System.out.println ("Man " + currentBlueNode + " engaged to woman " + w);
-		                        break;
-		                    }
-		                }
-		            }
-	           size = availableBlueNode.size();
+            for (int pinkNode : blueNodes[currentBlueNode-1]) // loop through preferences of this blue node
+            {
+                if (availablePinkNode.get(pinkNode) == null) // this pink node is not yet engaged
+                {
+                    availablePinkNode.put(pinkNode, currentBlueNode);
+                    finalBlueNode.put(currentBlueNode, pinkNode);
+                    System.out.println (currentBlueNode + " engaged to " + pinkNode);
+                    break;
+                } 
+                else               // this pink node is currently engaged
+                {
+                	int matchedBlueNode = availablePinkNode.get(pinkNode);
+                    int prefForMatchedBlueNode = -1;
+                    int prefForCurrentBlueNode = -1;
+                    for (int i=0; i<pinkNodes[pinkNode-1].length; i++)  
+                        if (pinkNodes[pinkNode-1][i] == matchedBlueNode) // find preference order for current matched blue node
+                            prefForMatchedBlueNode = i;
+                    
+                    for (int j=0; j<pinkNodes[pinkNode-1].length; j++) 
+                        if (pinkNodes[pinkNode-1][j] == currentBlueNode) // find preference order for current proposer
+                            prefForCurrentBlueNode = j;
+                    
+                    if (prefForCurrentBlueNode < prefForMatchedBlueNode) // next unmatched blue node has higher preference by this woman
+                    {
+                        availablePinkNode.put (pinkNode, currentBlueNode);
+                        finalBlueNode.put (currentBlueNode, pinkNode);// accept current unmatched blue node
+                        availableBlueNode.add(matchedBlueNode); // return previous matched blue node to unmatched blue node's pool
+                        System.out.println (matchedBlueNode + " is dumped by " + pinkNode);
+                        System.out.println (currentBlueNode + " engaged to " + pinkNode);
+                        break;
+                    }// else no change...keep looking for this blue node
+                }
+            }
         }
         //Print matched blue node number.
         //reverse(availablePinkNode);
         /* for (Integer value: availablePinkNode.values())
         	System.out.println(availablePinkNode.get(value)); */
-        Iterator<Entry<Integer, Integer>> itr = finalBlueNode.entrySet().iterator();
-        while (itr.hasNext())
-        {
-            Entry<Integer, Integer> entry = itr.next();
-            System.out.println (entry.getValue());
-        } 
+        for (Map.Entry<Integer, Integer> matched: finalBlueNode.entrySet())
+        	System.out.println(matched.getValue()); 
+        
+        /* for (Integer matched: finalBlueNode.keySet())
+        	System.out.println(finalBlueNode.get(matched)); */
      } 
         /* public static <K,V> HashMap<V,K> reverse(Map<K,V> map) {
             HashMap<V,K> rev = new HashMap<V, K>();
