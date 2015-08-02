@@ -21,7 +21,7 @@ public class CS320_A1 {
     } */
     	
     	Scanner scanner = new Scanner (System.in);
-		//Scanner scanner = new Scanner ("input.txt");
+	//Scanner scanner = new Scanner ("input.txt");
     	int [][] blueNodes = null;
     	int [][] pinkNodes = null;
     	int row = 0;
@@ -104,7 +104,7 @@ public class CS320_A1 {
 	        	} 
             } 
     	}catch (NullPointerException e){
-    		e.printStackTrace();
+    	    e.printStackTrace();
     	}finally{
     	    scanner.close(); 
     	} 
@@ -136,7 +136,7 @@ public class CS320_A1 {
                 } 
                 else               // this pink node is currently engaged
                 {
-                	int matchedBlueNode = availablePinkNode.get(pinkNode);
+                    int matchedBlueNode = availablePinkNode.get(pinkNode);
                     int prefForMatchedBlueNode = -1;
                     int prefForCurrentBlueNode = -1;
                     for (int i=0; i<pinkNodes[pinkNode-1].length; i++)  
