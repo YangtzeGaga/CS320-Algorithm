@@ -1,0 +1,19 @@
+coordinate(I, Row, Col) :-
+	Row is (I-1) div 3 + 1,
+	Col is (I-1) mod 3 + 1.
+manh_dist(CurrentState, GoalState, Dist) :-
+	aggregate_all(sum(Heuristic),
+		     (nth1(I, CurrentState, N), coordinate(I, Row1, Col1),
+		      nth1(J, GoalState, N), coordinate(J, Row2, Col2),
+		      Heuristic is abs(Row1-Row2) + abs(Col1-Col2)
+		     ), Dist).
+
+h(CurrentState, Heuristic) :-
+	is_goal(GoalState),
+	manh_dist(CurrentState, Goalstate, Dist),
+	Heuristic is Dist.
+
+neighbors(CurrentState, Neighbors) :-
+	nth1(I, CurrentState, 0),
+	coordinate(I, Row, Col),
+	findall(Neighbor, (), Neighbors).
