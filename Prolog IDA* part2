@@ -1,0 +1,94 @@
+
+adjacent(1,2).
+adjacent(1,4).
+adjacent(2,1).
+adjacent(2,3).
+adjacent(2,5).
+adjacent(3,2).
+adjacent(3,6).
+adjacent(4,1).
+adjacent(4,7).
+adjacent(4,5).
+adjacent(5,2).
+adjacent(5,4).
+adjacent(5,6).
+adjacent(5,8).
+adjacent(6,3).
+adjacent(6,5).
+adjacent(6,9).
+adjacent(7,4).
+adjacent(7,8).
+adjacent(8,5).
+adjacent(8,7).
+adjacent(8,9).
+adjacent(9,6).
+adjacent(9,8).
+
+h(CurrentState, Heuristic) :-
+	h(manh_dist, CurrentState, Heuristic).
+
+h(manh_dist, CurrentState, Heuristic) :-
+	manh_dist(CurrentState, CurrentState, 0, Heuristic).
+
+manh_dist([], _, Dist, Dist).
+
+manh_dist([Head|Rest], CurrentState, G, H) :-
+	(   \+ Head = 0
+	-> nth1(I, CurrentState, Head),
+	coordinate(I, Row1, Col1),
+	is_goal(GoalState),
+	nth1(J, GoalState, Head),
+	coordinate(J, Row2, Col2),
+	Distance is abs(Row1-Row2) + abs(Col1-Col2),
+	Aggregate is G + Distance,
+	manh_dist(Rest, CurrentState, Aggregate, H)
+	; Aggregate is G,
+	manh_dist(Rest, CurrentState, Aggregate, H)
+	).
+
+coordinate(I, Row, Col) :-
+	Row is (I-1) div 3 + 1,
+	Col is (I-1) mod 3 + 1.
+
+neighbors(CurrentState, Neighbors) :-
+	findall(Neighbor, neighbor(CurrentState, Neighbor), Neighbors).
+
+neighbor(CurrentState, Neighbor) :-
+	nth1(ZeroIndex, CurrentState, 0),
+	adjacentToZero(ZeroIndex, TileIndex),
+	swap(CurrentState, ZeroIndex, TileIndex, Neighbor).
+
+adjacentToZero(ZeroIndex, TileIndex) :-
+	adjacent(ZeroIndex, TileIndex).
+
+swap(CurrentState, ZeroIndex, TileIndex, NewState) :-
+	I is ZeroIndex-1,
+	J is TileIndex-1,
+	same_length(CurrentState, NewState),
+	append(BeforeI, [AtI|PastI], CurrentState),
+	append(BeforeI, [AtJ|PastI], Temp),
+	append(BeforeJ, [AtJ|PastJ], Temp),
+	append(BeforeJ, [AtI|PastJ], NewState),
+	length(BeforeI, I),
+	length(BeforeJ, J).
+/*
+swap(CurrentState, ZeroIndex, TileIndex, CurrentState) :-
+	ZeroIndex = TileIndex.
+
+swap(CurrentState, ZeroIndex, TileIndex, NewState) :-
+	swap(CurrentState, ZeroIndex, TileIndex, NewState, _, _).
+
+swap(CurrentState, ZeroIndex, TileIndex, NewState) :-
+	swap(CurrentState, TileIndex, ZeroIndex, NewState, _, _).
+
+swap([E2|CurrentRest], ZeroIndex, 1, [E1|CurrentRest], E1, E2) :-!.
+
+swap([E1|Temp], 1, TileIndex, [E2|NewRest], E1, E2) :-
+	N is TileIndex,
+	swap(Temp, 0, N, NewRest, E1, E2),!.
+
+swap([E|Temp], ZeroIndex, TileIndex, [E|NewRest], E1, E2) :-
+	N1 is ZeroIndex,
+	N2 is TileIndex,
+	swap(Temp, N1, N2, NewRest, E1, E2).
+*/
